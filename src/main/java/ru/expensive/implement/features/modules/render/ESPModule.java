@@ -62,7 +62,7 @@ public class ESPModule extends Module implements QuickImports {
         MatrixStack stack = drawContext.getMatrices();
         int screenW = window.getScaledWidth();
         int screenH = window.getScaledHeight();
-        float dt = event.getPartialTicks();
+        float dt = mc.getTickDelta();
 
         RenderSystem.disableDepthTest();
 
