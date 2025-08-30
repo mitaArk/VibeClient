@@ -19,6 +19,7 @@ import ru.expensive.api.feature.module.setting.implement.ValueSetting;
 import ru.expensive.api.repository.friend.FriendRepository;
 import ru.expensive.api.system.font.FontRenderer;
 import ru.expensive.api.system.font.Fonts;
+import ru.expensive.api.system.shape.ShapeProperties;
 import ru.expensive.common.QuickImports;
 import ru.expensive.common.util.math.ProjectionUtil;
 import ru.expensive.implement.events.render.DrawEvent;
@@ -44,9 +45,13 @@ public class ESPModule extends Module implements QuickImports {
     private final ColorSetting friendNameColorSetting = new ColorSetting("Friend Name Color", "Цвет никнейма друга")
             .presets(0xFF80FF80, 0xFF00FF00);
 
+    private final ColorSetting nameBackgroundColorSetting = new ColorSetting("Name Background", "Цвет фона никнейма")
+            .value(0xB2060712)
+            .presets(0xB2060712, 0x80000000, 0xA0000000);
+
     public ESPModule() {
         super("ESP", "ESP", ModuleCategory.RENDER);
-        setup(showNamesSetting, showArmorSetting, showHeldItemsSetting, nameSizeSetting, nameColorSetting, friendNameColorSetting);
+        setup(showNamesSetting, showArmorSetting, showHeldItemsSetting, nameSizeSetting, nameColorSetting, friendNameColorSetting, nameBackgroundColorSetting);
     }
 
     @EventHandler
@@ -100,7 +105,24 @@ public class ESPModule extends Module implements QuickImports {
 
         FontRenderer renderer = Fonts.getSize(size);
         float textWidth = renderer.getStringWidth(name);
-        renderer.drawString(stack, name, centerX - textWidth / 2.0f, y, color);
+
+        float paddingX = 3.0f;
+        float paddingY = 1.0f;
+        float bgX = centerX - textWidth / 2.0f - paddingX;
+        float bgY = y - 1.5f;
+        float bgW = textWidth + paddingX * 2.0f;
+        float bgH = 10.0f;
+
+        rectangle.render(ShapeProperties.create(stack.peek().getPositionMatrix(), bgX, bgY, bgW, bgH)
+                .round(3)
+                .thickness(2)
+                .softness(1)
+                .outlineColor(0xFF060712)
+                .color(nameBackgroundColorSetting.getColor())
+                .build()
+        );
+
+        renderer.drawString(stack, name, centerX - textWidth / 2.0f + 0.8f, y + 1.2f, color);
     }
 
     private float drawArmorRow(DrawContext ctx, MatrixStack stack, PlayerEntity player, float centerX, float y) {
