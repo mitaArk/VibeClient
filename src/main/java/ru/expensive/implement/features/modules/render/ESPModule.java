@@ -62,25 +62,27 @@ public class ESPModule extends Module implements QuickImports {
         MatrixStack stack = drawContext.getMatrices();
         int screenW = window.getScaledWidth();
         int screenH = window.getScaledHeight();
+        float dt = event.getPartialTicks();
 
         RenderSystem.disableDepthTest();
 
         for (PlayerEntity player : mc.world.getPlayers()) {
             if (player == mc.player) continue;
 
+            // Interpolated position to avoid jitter when moving camera
+            double ix = player.prevX + (player.getX() - player.prevX) * dt;
+            double iy = player.prevY + (player.getY() - player.prevY) * dt;
+            double iz = player.prevZ + (player.getZ() - player.prevZ) * dt;
+
             // Skip entities that are behind the camera (angle culling)
             Vec3d cameraPos = mc.getEntityRenderDispatcher().camera.getPos();
-            Vec3d toTarget = player.getPos().add(0, player.getEyeHeight(player.getPose()), 0).subtract(cameraPos);
-            Vec3d forward = mc.getCameraEntity() != null ? mc.getCameraEntity().getRotationVec(mc.getTickDelta()) : new Vec3d(0, 0, 1);
+            Vec3d toTarget = new Vec3d(ix, iy + player.getEyeHeight(player.getPose()), iz).subtract(cameraPos);
+            Vec3d forward = mc.getCameraEntity() != null ? mc.getCameraEntity().getRotationVec(dt) : new Vec3d(0, 0, 1);
             if (forward.dotProduct(toTarget.normalize()) <= 0.0) {
                 continue;
             }
 
-            Vec3d headPos = new Vec3d(
-                    player.getX(),
-                    player.getY() + player.getHeight() + 0.3,
-                    player.getZ()
-            );
+            Vec3d headPos = new Vec3d(ix, iy + player.getHeight() + 0.3, iz);
 
             Vector2f screen = ProjectionUtil.project(headPos.x, headPos.y, headPos.z);
             if (screen.equals(new Vector2f(Float.MAX_VALUE, Float.MAX_VALUE))) continue;
