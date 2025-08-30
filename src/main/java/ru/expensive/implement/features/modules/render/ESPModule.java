@@ -60,11 +60,21 @@ public class ESPModule extends Module implements QuickImports {
 
         DrawContext drawContext = event.getDrawContext();
         MatrixStack stack = drawContext.getMatrices();
+        int screenW = window.getScaledWidth();
+        int screenH = window.getScaledHeight();
 
         RenderSystem.disableDepthTest();
 
         for (PlayerEntity player : mc.world.getPlayers()) {
             if (player == mc.player) continue;
+
+            // Skip entities that are behind the camera (angle culling)
+            Vec3d cameraPos = mc.getEntityRenderDispatcher().camera.getPos();
+            Vec3d toTarget = player.getPos().add(0, player.getEyeHeight(player.getPose()), 0).subtract(cameraPos);
+            Vec3d forward = mc.getCameraEntity() != null ? mc.getCameraEntity().getRotationVec(mc.getTickDelta()) : new Vec3d(0, 0, 1);
+            if (forward.dotProduct(toTarget.normalize()) <= 0.0) {
+                continue;
+            }
 
             Vec3d headPos = new Vec3d(
                     player.getX(),
@@ -74,6 +84,11 @@ public class ESPModule extends Module implements QuickImports {
 
             Vector2f screen = ProjectionUtil.project(headPos.x, headPos.y, headPos.z);
             if (screen.equals(new Vector2f(Float.MAX_VALUE, Float.MAX_VALUE))) continue;
+
+            // Screen bounds culling (avoid drawing far offscreen projections)
+            if (screen.getX() < -32 || screen.getX() > screenW + 32 || screen.getY() < -32 || screen.getY() > screenH + 32) {
+                continue;
+            }
 
             float screenX = screen.getX();
             float screenY = screen.getY();
