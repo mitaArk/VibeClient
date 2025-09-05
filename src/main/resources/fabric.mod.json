@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "vibe-recode-fabric",
+  "version": "0.1-recode",
+  "name": "vibe-recode-fabric",
+  "description": "",
+  "authors": ["serverattacked"],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/vibe/logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "from.Vibe.Vibe"
+    ]
+  },
+  "mixins": [
+    "Vibe-recode.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.10",
+    "minecraft": "1.21.4"
+  }
+}
