@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screen.world.SelectWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.client.render.RenderLayer;
 
 public class MainMenuScreen extends Screen {
 
@@ -51,7 +52,7 @@ public class MainMenuScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.drawTexture(BG, 0, 0, 0, 0, this.width, this.height, 1920, 1080);
+        context.drawTexture(RenderLayer::getGui, BG, 0, 0, 0.0f, 0.0f, this.width, this.height, 1920, 1080);
 
         context.drawCenteredTextWithShadow(this.textRenderer, "DRUGHACK", this.width / 2, 40, 0xFFFFFF);
         super.render(context, mouseX, mouseY, delta);
