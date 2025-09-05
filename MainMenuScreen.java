@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 
 public class MainMenuScreen extends Screen {
 
-    private static final Identifier BG = new Identifier("drughack", "textures/mainmenu/background.png");
+    private static final Identifier BG = Identifier.of("drughack", "textures/mainmenu/background.png");
 
     public MainMenuScreen() {
         super(Text.literal("Main Menu"));
@@ -51,10 +51,7 @@ public class MainMenuScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.drawTexture(BG, 0, 0, this.width, this.height,
-                0, 0,
-                1920, 1080,
-                1920, 1080);
+        context.drawTexture(BG, 0, 0, 0, 0, this.width, this.height, 1920, 1080);
 
         context.drawCenteredTextWithShadow(this.textRenderer, "DRUGHACK", this.width / 2, 40, 0xFFFFFF);
         super.render(context, mouseX, mouseY, delta);
