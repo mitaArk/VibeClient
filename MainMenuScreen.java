@@ -52,7 +52,7 @@ public class MainMenuScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.drawTexture(RenderLayer::getGui, BG, 0, 0, 0.0f, 0.0f, this.width, this.height, 1920, 1080);
+        context.drawTexture(identifier -> RenderLayer.getGui(), BG, 0, 0, 0.0f, 0.0f, this.width, this.height, 1920, 1080);
 
         context.drawCenteredTextWithShadow(this.textRenderer, "DRUGHACK", this.width / 2, 40, 0xFFFFFF);
         super.render(context, mouseX, mouseY, delta);
